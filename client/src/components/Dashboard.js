@@ -72,7 +72,15 @@ function Dashboard({ owner, repo, onBack }) {
 
       <StatsBar runs={runs} />
       <TrendChart runs={runs} />
-      <RunList runs={runs} selectedRun={selectedRun} onSelect={handleSelectRun} jobs={jobs} jobsLoading={jobsLoading} />
+      <RunList
+        runs={runs}
+        selectedRun={selectedRun}
+        onSelect={handleSelectRun}
+        jobs={jobs}
+        jobsLoading={jobsLoading}
+        owner={owner}
+        repo={repo}
+      />
     </div>
   );
 }

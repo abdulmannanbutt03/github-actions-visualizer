@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import DiagnosticPanel from './DiagnosticPanel';
 
 const statusColor = (conclusion, status) => {
   if (status === 'in_progress') return '#d29922';
@@ -24,12 +24,12 @@ const duration = (start, end) => {
   return `${mins}m ${secs}s`;
 };
 
-function RunList({ runs, selectedRun, onSelect, jobs, jobsLoading }) {
+function RunList({ runs, selectedRun, onSelect, jobs, jobsLoading, owner, repo }) {
   return (
     <div style={{ background: '#161b22', border: '1px solid #21262d', borderRadius: 10, overflow: 'hidden' }}>
       <div style={{ padding: '16px 20px', borderBottom: '1px solid #21262d' }}>
         <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#e6edf3' }}>
-          Pipeline Runs <span style={{ fontWeight: 400, color: '#8b949e', fontSize: 12 }}>— click a run to see jobs</span>
+          Pipeline Runs <span style={{ fontWeight: 400, color: '#8b949e', fontSize: 12 }}>— click a run to diagnose</span>
         </p>
       </div>
 
@@ -72,24 +72,11 @@ function RunList({ runs, selectedRun, onSelect, jobs, jobsLoading }) {
           {selectedRun?.id === run.id && (
             <div style={{ background: '#0d1117', padding: '16px 20px', borderBottom: '1px solid #21262d' }}>
               {jobsLoading ? (
-                <p style={{ color: '#8b949e', fontSize: 13, margin: 0 }}>Loading jobs...</p>
+                <p style={{ color: '#8b949e', fontSize: 13, margin: 0 }}>Loading diagnostic data...</p>
               ) : jobs.length === 0 ? (
                 <p style={{ color: '#8b949e', fontSize: 13, margin: 0 }}>No jobs found.</p>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {jobs.map(job => (
-                    <div key={job.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: '#161b22', borderRadius: 8, border: '1px solid #21262d' }}>
-                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: statusColor(job.conclusion, job.status), flexShrink: 0 }}></div>
-                      <p style={{ margin: 0, fontSize: 13, color: '#e6edf3', flex: 1 }}>{job.name}</p>
-                      <p style={{ margin: 0, fontSize: 12, color: statusColor(job.conclusion, job.status), fontWeight: 600 }}>
-                        {statusLabel(job.conclusion, job.status)}
-                      </p>
-                      <p style={{ margin: 0, fontSize: 12, color: '#8b949e' }}>
-                        {duration(job.started_at, job.completed_at)}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                <DiagnosticPanel owner={owner} repo={repo} run={run} jobs={jobs} />
               )}
             </div>
           )}
